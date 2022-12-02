@@ -3,12 +3,14 @@ import numpy as np
 import geopandas
 import shapely.geometry
 
+N_CELLS = 30
+
 def get_cells():
     # total area for the grid
     xmin, ymin, xmax, ymax= [2.972889, 50.601455, 3.121113, 50.656799]
 
     # getting cells size
-    cell_size = (xmax-xmin)/20
+    cell_size = (xmax-xmin)/N_CELLS
 
     # projection of the grid
     crs = "+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs"
@@ -29,7 +31,7 @@ def get_grid_values(df):
     # creating the GeoDataFrame with only lat and lon from original Dataframe
     df_grid = df.copy()
     gdf = geopandas.GeoDataFrame(df_grid,
-            geometry=geopandas.points_from_xy(df.longitude, df.latitude),
+            geometry=geopandas.points_from_xy(df.lon, df.lat),
             crs="+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs")
 
     # getting the cells based on gdf
@@ -91,3 +93,26 @@ def get_cell_coords(cell):
     corner_coords.pop()
 
     return corner_coords
+
+def get_surround_features(df, df_features):
+    # getting all the features by cell and adding them to a dictionary
+    dict_features = {}
+    for cell in range(0,df.cell.max()):
+        features_count = df_features[df_features['cell']==cell]['feature'].value_counts()
+        if features_count.shape[0] != 0:
+            dict_features[cell] = features_count
+
+
+
+    return df
+
+def get_near_features(df_target, df_features):
+    df_target.cell.max()
+    dict_features = {}
+    for cell in range(-1,df_target.cell.max()+1):
+        features_count = df_features[df_features['cell']==cell]['Sous_Cat'].value_counts()
+        dict_features[cell] = features_count
+    for idx, row in df_target.iterrows():
+        for feature in dict_features[row['cell']].items():
+            df_target.at[idx, feature[0]] = feature[1]
+    return df_target
