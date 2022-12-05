@@ -34,3 +34,18 @@ def get_surrounding_targets(latitude, longitude, target_df, dist=500):
         closest_targets = list(closest_targets.keys())[:10]
 
     return closest_targets
+
+def get_surrounding_features(latitude, longitude, features_df, dist=500):
+    surround_features = {}
+    coords = (latitude, longitude)
+    for idx_f, row_f in features_df.iterrows():
+        coord_f = (row_f['lat'],row_f['lon'])
+        # calculating the distance between target and feature and checking if distance is under dist meters
+        if distance.distance(coords,coord_f).meters < dist:
+            # getting all features in dist meters radius
+            if surround_features.get(row_f['Sous_Cat']) is not None:
+                surround_features[row_f['Sous_Cat']].append(idx_f)
+            else:
+                surround_features[row_f['Sous_Cat']] = [idx_f]
+
+    return surround_features
