@@ -27,11 +27,11 @@ def get_cells():
 
     return cells
 
-def get_grid_values(df):
+def get_grid_values(target_df):
     # creating the GeoDataFrame with only lat and lon from original Dataframe
-    df_grid = df.copy()
+    df_grid = target_df.copy()
     gdf = geopandas.GeoDataFrame(df_grid,
-            geometry=geopandas.points_from_xy(df.lon, df.lat),
+            geometry=geopandas.points_from_xy(target_df.lon, target_df.lat),
             crs="+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs")
 
     # getting the cells based on gdf
@@ -94,25 +94,24 @@ def get_cell_coords(cell):
 
     return corner_coords
 
-def get_surround_features(df, df_features):
+def get_surround_features(target_df, features_df):
     # getting all the features by cell and adding them to a dictionary
     dict_features = {}
-    for cell in range(0,df.cell.max()):
-        features_count = df_features[df_features['cell']==cell]['feature'].value_counts()
+    for cell in range(0,target_df.cell.max()):
+        features_count = features_df[features_df['cell']==cell]['feature'].value_counts()
         if features_count.shape[0] != 0:
             dict_features[cell] = features_count
 
+    return target_df
 
-
-    return df
-
-def get_near_features(df_target, df_features):
-    df_target.cell.max()
+def get_near_features(target_df, features_df):
+    target_df.cell.max()
     dict_features = {}
-    for cell in range(-1,df_target.cell.max()+1):
-        features_count = df_features[df_features['cell']==cell]['Sous_Cat'].value_counts()
+    for cell in range(-1,target_df.cell.max()+1):
+        features_count = features_df[features_df['cell']==cell]['Sous_Cat'].value_counts()
         dict_features[cell] = features_count
-    for idx, row in df_target.iterrows():
+    for idx, row in target_df.iterrows():
         for feature in dict_features[row['cell']].items():
-            df_target.at[idx, feature[0]] = feature[1]
-    return df_target
+            target_df.at[idx, feature[0]] = feature[1]
+
+    return target_df
