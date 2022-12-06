@@ -6,7 +6,7 @@ import folium
 from streamlit_folium import st_folium
 from modules.lille_grid import *
 from modules.lille_distance import *
-from modules.map_colors import *
+from modules.map_utils import *
 
 # getting the api from osm
 locator = Nominatim(user_agent='myGeocoder')
