@@ -6,6 +6,7 @@ import folium
 from streamlit_folium import st_folium
 from modules.lille_grid import *
 from modules.lille_distance import *
+from modules.map_colors import *
 
 # getting the api from osm
 locator = Nominatim(user_agent='myGeocoder')
@@ -16,6 +17,9 @@ st.set_page_config(layout="wide")
 # loading the csv in dataframes
 target_df = pd.read_csv('./data/target.csv')
 features_df = pd.read_csv('./data/cat_features.csv')
+
+# getting the map circle colors
+circle_color_dict = get_icons_colors()
 
 # create a form to display and enter adress searches
 with st.form("form"):
@@ -36,7 +40,7 @@ with st.form("form"):
 
         # gets the 10 closest targets and calculates the mean of their Prix m2
         closest_t = get_surrounding_targets(adr_coords.latitude, adr_coords.longitude, target_df, dist)
-        estimate = round(target_df.iloc[closest_t]['Prix m2'].mean(),2)
+        estimate = round(target_df.iloc[closest_t]['prix_m2'].mean(),2)
 
         # draws a circle around the given adress
         folium.Circle(
@@ -56,7 +60,8 @@ with st.form("form"):
                 folium.Circle(
                     location=[features_df.iloc[id_f]['lat'], features_df.iloc[id_f]['lon']],
                     tooltip = key,
-                    radius=4
+                    radius=4,
+                    color = circle_color_dict[key]
                 ).add_to(map)
 
         # display the map
