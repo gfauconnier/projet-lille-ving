@@ -45,10 +45,16 @@ with st.form("form"):
         # draws a circle around the given adress
         folium.Circle(
                     location=[adr_coords.latitude, adr_coords.longitude],
-                    tooltip = f"Estimation : {estimate}€ au m²",
+                    popup = f"Estimation : {estimate}€ au m²",
                     radius = dist,
                     fill=True,
                     fill_color="#3186cc"
+                ).add_to(map)
+        folium.Circle(
+                    location=[adr_coords.latitude, adr_coords.longitude],
+                    tooltip = f"Estimation : {estimate}€ au m²",
+                    radius = 3,
+                    fill=True
                 ).add_to(map)
 
         # gets the surrounding features in given radius meters
