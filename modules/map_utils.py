@@ -112,3 +112,11 @@ def get_icons_colors():
     }
 
     return colors_dict
+
+def get_type_local(type_local):
+    code_type_local = {
+                        'Tous' : 0,
+                        'Maisons' : 1.0,
+                        'Appartements':2.0
+                        }
+    return code_type_local[type_local]
