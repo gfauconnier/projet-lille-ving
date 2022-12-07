@@ -55,7 +55,8 @@ with st.form("form", clear_on_submit=False):
         selected_features = [cat_dict[cat] for cat in selected_categories]
 
         # flattens the list if selected_features is a list of lists
-        selected_features = np.concatenate(selected_features)
+        if len(selected_features) != 0:
+            selected_features = np.concatenate(selected_features)
 
         # gets the rows of the dataframe depending on the slider values if budget and surface aren't typed
         code_type_local = get_type_local(type_local)
