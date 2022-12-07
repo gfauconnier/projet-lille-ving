@@ -21,7 +21,6 @@ with st.form("form", clear_on_submit=False):
     type_local = st_columns[0].selectbox('Type de bien : ', ('Tous', 'Maisons', 'Appartements'))
 
     # adds a slider to select a range of prices
-    st_columns[1].text('Si la surface et le budget ne sont pas renseignés.')
     price_range = st_columns[1].select_slider('Fourchette de prix au m²', options=np.arange(1000, 7750, 250), value=(2000,3000))
 
     # adds input text boxes for budget and surface
