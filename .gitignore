@@ -2,3 +2,4 @@ dvf.ipynb
 grid.ipynb
 distances.ipynb
 .ipynb_checkpoints/
+__pycache__/
