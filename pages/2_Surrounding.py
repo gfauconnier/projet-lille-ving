@@ -3,30 +3,37 @@ import pandas as pd
 import numpy as np
 from geopy import Nominatim
 import folium
+from folium import FeatureGroup
 from streamlit_folium import st_folium
 from modules.lille_grid import *
 from modules.lille_distance import *
 from modules.map_utils import *
+from PIL import Image
 
 # getting the api from osm
 locator = Nominatim(user_agent='myGeocoder')
 
 # creating streamlit page
-st.set_page_config(layout="wide")
+st.set_page_config(
+            layout="wide",
+            page_title="Greatest place to Lille'ving",
+            initial_sidebar_state='collapsed'
+            )
 
 # loading the csv in dataframes
 target_df = pd.read_csv('./data/target.csv')
 features_df = pd.read_csv('./data/cat_features.csv')
 
 # getting the map circle colors
-circle_color_dict = get_icons_colors()
+circle_color_dict = get_circle_colors()
+cat_dict = get_cat_dict()
 
 # create a form to display and enter adress searches
 with st.form("form"):
     # adding columns for better display
     st_columns = st.columns(3,gap="medium")
     # setting a text box with a default value
-    address = st_columns[0].text_input('Adresse : ', '27 rue du bas jardin, Lille')
+    address = st_columns[0].text_input('Adresse : ', '27 rue Nationale, Lille')
     # creating a slider to select the radius of the features search
     dist = st_columns[1].slider('Distance(m) : ', 250, 2000, 500, step=250)
     # submit button
@@ -63,12 +70,20 @@ with st.form("form"):
         # adding all features on the map
         for key, value in surround_features.items():
             for id_f in value:
-                folium.Circle(
-                    location=[features_df.iloc[id_f]['lat'], features_df.iloc[id_f]['lon']],
-                    tooltip = key,
-                    radius=4,
-                    color = circle_color_dict[key]
-                ).add_to(map)
+                # get the category from the Sous_cat and get its cricle color
+                cat_color = [key_cat for key_cat, value in cat_dict.items() if key in value]
+                if len(cat_color) == 1:
+                    folium.Circle(
+                        location=[features_df.iloc[id_f]['lat'], features_df.iloc[id_f]['lon']],
+                        tooltip = key,
+                        radius=4,
+                        color = circle_color_dict[cat_color[0]]
+                    ).add_to(map)
 
         # display the map
         st_map = st_folium(map, width=1724)
+
+        #adds legend under the map
+        image = Image.open('./data/legende.png')
+        col_legend = st.columns((1,2,1))
+        col_legend[1].image(image)

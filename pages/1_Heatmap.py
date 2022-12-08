@@ -8,16 +8,24 @@ from streamlit_folium import st_folium
 from modules.heatmap import *
 from modules.map_utils import *
 
+# getting the location api
 locator = Nominatim(user_agent='myGeocoder')
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+            layout="wide",
+            page_title="Greatest place to Lille'ving",
+            initial_sidebar_state='collapsed'
+            )
 
+# loading the dataframes
 features_df = pd.read_csv('./data/cat_features.csv')
 target_df = pd.read_csv('./data/df_22k_250m_c.csv')
 
+# creates the form
 with st.form("form", clear_on_submit=False):
     st_columns = st.columns(3,gap="medium")
 
+    # add drop selector
     type_local = st_columns[0].selectbox('Type de bien : ', ('Tous', 'Maisons', 'Appartements'))
 
     # adds a slider to select a range of prices
@@ -40,6 +48,7 @@ with st.form("form", clear_on_submit=False):
 
 
     submitted = st.form_submit_button("Submit")
+
     # creates the map
     map = folium.Map(location=[50.62925, 3.057256], zoom_start=13, control_scale=True)
 
@@ -51,13 +60,6 @@ with st.form("form", clear_on_submit=False):
 
         # gets the categories that are checked in a list
         selected_categories = [key for key, value in checkbox_features.items() if value]
-
-        # gets the Sous_cat of categories dict
-        # selected_features = [cat_dict[cat] for cat in selected_categories]
-
-        # flattens the list if selected_features is a list of lists
-        # if len(selected_features) != 0:
-        #     selected_features = np.concatenate(selected_features)
 
         # gets the rows of the dataframe depending on the slider values if budget and surface aren't typed
         code_type_local = get_type_local(type_local)
