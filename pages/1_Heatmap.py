@@ -7,6 +7,7 @@ from folium.plugins import HeatMap
 from streamlit_folium import st_folium
 from modules.heatmap import *
 from modules.map_utils import *
+from modules.style import *
 
 # getting the location api
 locator = Nominatim(user_agent='myGeocoder')
@@ -73,3 +74,11 @@ with st.form("form", clear_on_submit=False):
 
         # prints the map
         st_map = st_folium(map, width=1724)
+
+# add links to other pages
+link_col = st.columns((1,2,2,1))
+with link_col[1]:
+    add_link_button('Index')
+with link_col[2]:
+    add_link_button('Surrounding')
+add_button_style()

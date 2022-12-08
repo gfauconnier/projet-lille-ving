@@ -19,8 +19,9 @@ def add_bg_from_local(image_file):
     )
 
 def add_link_button(link):
+    href = f'./{link}' if link != 'Index' else f'..'
     st.write(f'''
-        <a target="_self" href="./{link}">
+        <a target="_self" href="{href}">
             <button class="button">
                 {link}
             </button>
@@ -43,7 +44,7 @@ def add_button_style():
             margin: 20px;
         }}
         .button:hover {{
-            background-color: #e7e7e7;
+            background-color: #d7d7d7;
         }}
         </style>
         """,

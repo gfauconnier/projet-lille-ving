@@ -8,6 +8,7 @@ from streamlit_folium import st_folium
 from modules.lille_grid import *
 from modules.lille_distance import *
 from modules.map_utils import *
+from modules.style import *
 from PIL import Image
 
 # getting the api from osm
@@ -31,11 +32,15 @@ cat_dict = get_cat_dict()
 # create a form to display and enter adress searches
 with st.form("form"):
     # adding columns for better display
-    st_columns = st.columns(3,gap="medium")
+    st_columns = st.columns(2,gap="medium")
     # setting a text box with a default value
-    address = st_columns[0].text_input('Adresse : ', '27 rue Nationale, Lille')
-    # creating a slider to select the radius of the features search
-    dist = st_columns[1].slider('Distance(m) : ', 250, 2000, 500, step=250)
+    with st_columns[0]:
+        address = st.text_input('Adresse : ', '27 rue Nationale, Lille')
+        # creating a slider to select the radius of the features search
+        dist = st.slider('Distance(m) : ', 250, 2000, 500, step=250)
+    #adds legend under the map
+    image = Image.open('./data/legende.png')
+    st_columns[1].image(image)
     # submit button
     submitted = st.form_submit_button("Submit")
 
@@ -43,7 +48,7 @@ with st.form("form"):
     if submitted:
         # gets the adress entered in the text box and centers the map on it
         adr_coords = locator.geocode(address)
-        map = folium.Map(location=[adr_coords.latitude, adr_coords.longitude], zoom_start=15, control_scale=True)
+        map = folium.Map(location=[adr_coords.latitude, adr_coords.longitude], zoom_start=16, control_scale=True)
 
         # gets the 10 closest targets and calculates the mean of their Prix m2
         closest_t = get_surrounding_targets(adr_coords.latitude, adr_coords.longitude, target_df, dist)
@@ -83,7 +88,15 @@ with st.form("form"):
         # display the map
         st_map = st_folium(map, width=1724)
 
-        #adds legend under the map
-        image = Image.open('./data/legende.png')
-        col_legend = st.columns((1,2,1))
-        col_legend[1].image(image)
+        # #adds legend under the map
+        # image = Image.open('./data/legende.png')
+        # col_legend = st.columns((1,2,1))
+        # col_legend[1].image(image)
+
+# add links to other pages
+link_col = st.columns((1,2,2,1))
+with link_col[1]:
+    add_link_button('Index')
+with link_col[2]:
+    add_link_button('Heatmap')
+add_button_style()
