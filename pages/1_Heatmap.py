@@ -38,14 +38,14 @@ with st.form("form", clear_on_submit=False):
 
     # gets the categories dictionary and create the checkboxes
     cat_dict = get_cat_dict()
-    checkbox_features = {}
+
     checkbox_expander = st.expander("Selectionnez les catégories", expanded=False)
     with checkbox_expander:
         st_columns_check = st.columns(3,gap="small")
         checkbox_features = {}
         for key in cat_dict.keys():
             col = int(list(cat_dict.keys()).index(key)/9)
-            checkbox_features[key] = st_columns_check[col].checkbox(key)
+            checkbox_features[key] = st_columns_check[col].checkbox(key if key != 'Mosqué' else 'Mosquée')
 
 
     submitted = st.form_submit_button("Submit")
